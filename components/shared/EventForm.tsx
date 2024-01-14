@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,17 +14,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { eventFormSchema } from "@/lib/validator";
+import * as z from "zod";
 import { eventDefaultValues } from "@/constants";
 import Dropdown from "./Dropdown";
-
 import { Textarea } from "@/components/ui/textarea";
 import { FileUploader } from "./FileUploader";
-import { useUploadThing } from "@/lib/uploadthing";
 import { useState } from "react";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
+import { useUploadThing } from "@/lib/uploadthing";
+
 import "react-datepicker/dist/react-datepicker.css";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "../ui/checkbox";
 import { useRouter } from "next/navigation";
 import { createEvent, updateEvent } from "@/lib/actions/event.actions";
 import { IEvent } from "@/lib/database/models/event.model";
@@ -56,16 +56,13 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     defaultValues: initialValues,
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    const eventData = values;
-
     let uploadedImageUrl = values.imageUrl;
 
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
 
-      if (!uploadedImageUrl) {
+      if (!uploadedImages) {
         return;
       }
 
@@ -116,7 +113,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-5 "
+        className="flex flex-col gap-5"
       >
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
@@ -186,7 +183,8 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 md:flex-row ">
+
+        <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
             name="location"
@@ -196,10 +194,11 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                   <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-grey-50 px-4 py-2">
                     <Image
                       src="/assets/icons/location-grey.svg"
-                      alt="location"
+                      alt="calendar"
                       width={24}
                       height={24}
                     />
+
                     <Input
                       placeholder="Event location or Online"
                       {...field}
@@ -213,7 +212,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           />
         </div>
 
-        <div className="flex flex-col gap-5 md:flex-row ">
+        <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
             name="startDateTime"
@@ -236,7 +235,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       onChange={(date: Date) => field.onChange(date)}
                       showTimeSelect
                       timeInputLabel="Time:"
-                      dateFormat="dd/MM/yyyy h:mm aa"
+                      dateFormat="MM/dd/yyyy h:mm aa"
                       wrapperClassName="datePicker"
                     />
                   </div>
@@ -245,6 +244,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="endDateTime"
@@ -267,7 +267,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       onChange={(date: Date) => field.onChange(date)}
                       showTimeSelect
                       timeInputLabel="Time:"
-                      dateFormat="dd/MM/yyyy h:mm aa"
+                      dateFormat="MM/dd/yyyy h:mm aa"
                       wrapperClassName="datePicker"
                     />
                   </div>
@@ -277,6 +277,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
             )}
           />
         </div>
+
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
@@ -292,9 +293,6 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       height={24}
                       className="filter-grey"
                     />
-                    <p className="ml-3 whitespace-nowrap text-grey-600">
-                      Price:
-                    </p>
                     <Input
                       type="number"
                       placeholder="Price"
@@ -345,6 +343,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
                       width={24}
                       height={24}
                     />
+
                     <Input
                       placeholder="URL"
                       {...field}
@@ -364,7 +363,7 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
           disabled={form.formState.isSubmitting}
           className="button col-span-2 w-full"
         >
-          {form.formState.isSubmitting ? "Submitting..." : `${type} Event`}
+          {form.formState.isSubmitting ? "Submitting..." : `${type} Event `}
         </Button>
       </form>
     </Form>
